@@ -9,7 +9,6 @@ import Link from "next/link";
 const Page = () => {
   const router = useRouter();
   const [user, setUser] = useState({
-    username: "",
     email: "",
     password: "",
   });
@@ -17,27 +16,23 @@ const Page = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (
-      user.email.length > 0 &&
-      user.password.length > 0 &&
-      user.username.length > 0
-    ) {
+    if (user.email.length > 0 && user.password.length > 0) {
       setSubmitDisabled(false);
     } else {
       setSubmitDisabled(true);
     }
   }, [user]);
 
-  const onSignUp = async () => {
+  const onLogin = async () => {
     try {
       setLoading(() => true);
-      const response = await axios.post("/api/users/signup", user);
+      const response = await axios.post("/api/users/login", user);
       if (response.data.success) {
         console.log("Sign Up Success", response.data);
         toast.success(response.data);
         router.push("/home");
         setUser(() => {
-          return { email: "", password: "", username: "" };
+          return { email: "", password: "" };
         });
       } else {
         console.log(response.data.error);
@@ -53,19 +48,7 @@ const Page = () => {
     <div className="flex flex-col items-center justify-center min-h-screen">
       <h1>{loading ? "Processing" : "Sign Up"}</h1>
       <hr />
-      <label htmlFor="username">Username</label>
-      <input
-        className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
-        id="username"
-        type="text"
-        placeholder="username"
-        value={user.username}
-        onChange={(e) => {
-          setUser((x) => {
-            return { ...x, username: e.target.value };
-          });
-        }}
-      />
+
       <label htmlFor="email">Email</label>
       <input
         className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
@@ -93,15 +76,15 @@ const Page = () => {
         }}
       />
       <button
-        onClick={onSignUp}
+        onClick={onLogin}
         className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600"
         disabled={submitDisabled}
       >
-        Sign UP
+        Login
       </button>
       <br />
-      <Link className="text-sm" href={"/login"}>
-        Visit Login page
+      <Link className="text-sm" href={"/signup"}>
+        Visit Sign UP page
       </Link>
     </div>
   );
